@@ -1,4 +1,5 @@
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Alimentaire extends Produit implements Perissable{
 
@@ -10,8 +11,10 @@ public class Alimentaire extends Produit implements Perissable{
         addStock.addProductToList(this);
     }
 
-    public LocalDate getDatePeremption() {
-        return datePeremption;
+    public String getDatePeremption() {
+
+       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return this.datePeremption.format(formatter);
     }
 
     public void setDatePeremption(LocalDate datePeremption) {

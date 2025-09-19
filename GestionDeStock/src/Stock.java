@@ -39,9 +39,7 @@ public class Stock {
                 if (p instanceof Alimentaire) {
                     ecrire.writeUTF("Alimentaire");
                     Alimentaire a = (Alimentaire) p;
-                    ecrire.writeInt(a.getDatePeremption().getYear());
-                    ecrire.writeInt(a.getDatePeremption().getMonthValue());
-                    ecrire.writeInt(a.getDatePeremption().getDayOfMonth());
+                    ecrire.writeUTF(a.getDatePeremption());
                 } else if (p instanceof Electronique) {
                     ecrire.writeUTF("Electronique");
                     Electronique e = (Electronique) p;
@@ -60,8 +58,13 @@ public class Stock {
         try (ObjectInputStream lire = new ObjectInputStream(
                 new BufferedInputStream(new FileInputStream(nomFichierSortie)))) {
 
-            System.out.println("Liste des produits en stock");
-            System.out.println("---------------------------");
+            System.out.println("|" + "-".repeat(121) + "|");
+            System.out.printf("|%-46s|%-27s|%-46s|","-".repeat(46),"Liste des produits en stock", "-".repeat(46));
+            System.out.println();
+            System.out.println("|" + "-".repeat(121) + "|");
+            System.out.printf("|%-15s|%-15s|%-15s|%-15s|%-15s|%-25s|%-15s|", "Type","Code","Label", "Price", "Stock", "Date de péremption", "Périmé");
+            System.out.println();
+            System.out.println("|" + "-".repeat(121) + "|");
 
             int nbProduits = lire.readInt();
             Stock addStock = new Stock();
@@ -81,11 +84,32 @@ public class Stock {
                     int day = lire.readInt();
                     LocalDate date = LocalDate.of(year, month, day);
                     Alimentaire aliment = new Alimentaire(code, label, price, stock, date, addStock);
-                    System.out.println(aliment);
+                    System.out.printf(
+                            "|%-15s|%-15s|%-15d|%-14.2f%-1s|%-15s|%-25s|%-15s|%n",
+                            "Alimentaire",
+                            aliment.getLabel(),
+                            aliment.getCode(),
+                            aliment.getPrice(),"€",
+                            aliment.getStock(),
+                            aliment.getDatePeremption(),
+                            aliment.isExpired(date)// LocalDate sera converti en String via toString()// Exemple : suppose que Stock a une méthode getQuantite()
+
+
+                    );
+                    System.out.println("|" + "-".repeat(121) + "|");
                 } else if (type.equals("Electronique")) {
                     int dureeGarantie = lire.readInt();
                     Electronique electro = new Electronique(code, label, price, stock, dureeGarantie, addStock);
-                    System.out.println(electro);
+                    System.out.printf("|%-15s|%-15s|%-15d|%-14.2f%-1s|%-15s|%-25s|%-15s|%n",
+                            "Electronique",
+                            electro.getLabel(),
+                            electro.getCode(),
+                            electro.getPrice(),"€",
+                            electro.getStock(),
+                            electro.getDureeGarentie(),
+                            "**********");
+                    System.out.println("|" + "-".repeat(121) + "|");
+
                 }
 
 
